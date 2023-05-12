@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Courses{% endblock title %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block header_class_name %}c-header{% endblock header_class_name %}
+{% block header_content %}
+    <div class="c-container" style="display:none;">
+        <img src="{% static '' %}img/searchc.png" alt="Search" width="20">
+        <form method="get">
+            <input type="text" placeholder="search" class="c-search">
+        </form>
+    </div>
+{% endblock header_content %}
+{% block main_content %}
+    <section class="courses" style="margin-top:-300px">
+        <div class="grid">
+            {% for cat in all_categories  %}
+                <div class="course-card">
+                    <a href="{% url 'deaf_undead:course' cat.name %}" style="color:#c0ae93 !important;">
+                        {{cat.name}}
+                        <img src="{% static '' %}img/ASL.png" alt="">
+                    </a>   
+                    {% if  cat.name in all_favs %}
+                        <span style="margin-left:230px;" class="favourite"><a style="color:#c0ae93 !important;" href="{% url 'deaf_undead:add_to_favorites' cat.name %}?action=fav"> <i class="fa fa-star" aria-hidden="true"></i> </a></span>
+                    {% else %}
+                        <span style="margin-left:230px;" class="favourite"><a href="{% url 'deaf_undead:add_to_favorites' cat.name %}?action=fav"> <i class="fa fa-star" aria-hidden="true"></i> </a></span>
+                    {% endif %}     
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock main_content %}

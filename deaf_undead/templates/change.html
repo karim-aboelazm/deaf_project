@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Change password{% endblock title %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_id_name %}h-index{% endblock body_id_name %}
+{% block header_content %}
+    <div class="l-container">
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="password" name="new_password" placeholder="New password" class="lu-in" required><br>
+            <input type="password" name="new_password_confirmation" placeholder="Confirm new password" class="lp-in" required><br>
+            <input type="submit" value="Change Password" class="ll-btn"><br>
+        </form>
+        <div class="signup">
+            Don't have an account? <a href="{% url 'deaf_undead:signup' %}">Sign up</a><br>
+            Try to <a href="{% url 'deaf_undead:login' %}">Log in</a>
+        </div>   
+    </div>
+{% endblock header_content %}
+

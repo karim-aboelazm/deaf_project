@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block navbar_style %}
+<style>
+        .profile-wrapper{
+        position: absolute;
+        top: 15vh;
+        left: 35vw;
+        background: linear-gradient(271.41deg, #d2bd9c7c 3.13%, #7c706667 96.67%);
+        height: 70vh;
+        width: 90vw;
+        box-shadow: 0px 0px 10px -5px rgba(0, 0, 0, 0.75);
+        border-radius: 20px;
+        display: flex;
+        flex-flow: column wrap;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .profile-image {
+        position: relative;
+        display: flex;
+        width: 120px;
+        height: 120px;
+        box-sizing: border-box;
+        background-color: #7C7066;
+        border-bottom: 1px solid #7e8288;
+        box-shadow: 0px 0px 10px 0 rgba(0, 0, 0, 0.75);
+        overflow: hidden;
+        border-radius: 50%;
+        }
+        .temp-overlay {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        }
+
+        .temp-overlay.one {
+        background-color:rgba(124, 112, 102, 0.678);
+        animation: goUpOverlay 2s ease-in-out 1s both;
+        }
+
+        .temp-overlay.two {
+        background-color:#7C7066;
+        animation: goDownOverlay 2s ease-in-out 1s both;
+        }
+
+
+        .profile-username {
+        font-family: 'Poppins', sans-serif;
+        color:#ffffffc5;
+        font-size: 24px;
+        margin-top: 1rem;
+        text-align: center;
+        }
+        .profile-intro {
+        padding: 0rem 1rem 1rem 1rem;
+        display: flex;
+        flex-flow: column wrap;
+        align-items: center;
+        }
+
+        .username {
+        font-size: 14px;
+        color: #c0ae93;
+        letter-spacing: 2px;
+        margin-top: 1rem;
+        }
+
+        .profile-intro-Type {
+        font-size: 18px;
+        color: #998b7f;
+        line-height: normal;
+        text-align: justify;
+        letter-spacing: 1px;
+        margin-top: 1rem;
+        }
+        .profile-intro-Type .hd {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: -1rem;
+        }
+        #edit{
+        position: relative;
+        width: 200px;
+        margin-left:-35px;
+        height: 50px;
+        margin-top: 1rem;
+        background: linear-gradient(271.41deg, #D2BC9C 3.13%, #7C7066 96.67%);
+        border: #987C55;
+        color:#232B33;
+        font-weight: bold;
+        font-size: 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        }
+        #edit:hover{
+            background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            color: #D2BC9C;
+            font-weight: 100;
+        }
+
+        .profile-accounts {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3rem;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            box-shadow: 0px -2px 5px -3px rgba(0, 0, 0, 0.75);
+            background-color: #10161B;    
+        }
+
+        .profile-account-link {
+            text-decoration: none;
+            color: #7e8288;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .profile-account-link:hover {
+            color:#D2BC9C;
+        }
+        #red{
+            color: rgb(99, 43, 43);
+        }
+        #red:hover{
+            color: rgb(145, 35, 35);
+        }
+        @media (max-width:1200px){
+            .profile-wrapper{
+                left: 25vw;
+            }
+        }
+        @media (max-height:1280px){
+            .profile-wrapper{
+                top: 15vh;
+            }
+        }
+        @media (max-width:500px){
+            .profile-wrapper{
+                left: 20vw;
+                top: 30vh;
+            }
+            .profile-account-link {
+                font-size: 15px;
+            }
+        }
+        @media (max-width:450px){
+            .profile-wrapper{
+                left: 5vw;
+            }
+        }
+        @media (max-height:950px){
+            .profile-wrapper{
+                top: 15vh;
+            }
+        }
+        @media screen and (min-width: 500px) {
+            .profile-wrapper {
+            width: 70vw;
+            }
+            .profile-username {
+            font-size: 36px;
+            }
+        }
+
+        @media screen and (min-width: 600px) {
+            .profile-wrapper {
+            width: 50vw;
+            }
+        }
+
+        @media screen and (min-width: 1200px) {
+            .profile-wrapper {
+            width: 30vw;
+            }
+        }
+
+        @keyframes fillInText {
+            0% {
+            transform: scaleX(0);
+            }
+            100% {
+            transform: scaleX(1);
+            }
+        }
+
+        @keyframes goDownOverlay {
+            0% {
+            transform: translate3d(-50px, -50px, 0) rotate(45deg);
+            }
+            100% {
+            transform: rotate(45deg) translate3d(4000px, -50px, 0);
+            }
+        }
+
+        @keyframes goUpOverlay {
+            0% {
+            transform: translate3d(-50px, -50px, 0) rotate(-135deg);
+            }
+            100% {
+            transform: rotate(-135deg) translate3d(4000px, -50px, 0);
+            }
+        }
+
+        @keyframes popUp {
+            0% {
+            transform: scale(0);
+            }
+            70% {
+            transform: scale(1.3);
+            }
+            100% {
+            transform: scale(1);
+            }
+        }
+
+        /*Pop-up*/
+
+        #contact-modal{
+            display: none;
+            position: fixed;
+            top: 5vh;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        #modal-content{
+            background: linear-gradient(98.22deg, #303A43 0%, #10161B 100%);
+            margin: 35px auto;
+            width: 60%;
+            height: 85%;
+            max-height: 720px;
+            border-radius: 40px;
+            box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.25);
+            color: #D2BC9C;
+            font-weight: 400;
+            overflow-y: scroll;
+            animation-name: modalSlideUp;
+            animation-duration: 0.5s;
+        }
+        .close-modal{
+            color: #ffff;
+            font-size: 50px;
+            float: right;
+        }
+        .close-modal:hover{
+            color: #D2BC9C;
+            cursor: pointer;
+        }
+        #modal-body{
+            padding: 25px 30px;
+        }
+        #modal-body h3{
+            color: #D2BC9C;
+            text-transform: uppercase;
+            font-size: 35px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        @media(max-width:444px){
+            #modal-content{
+                width: 80%;
+                height: 90%;
+            }
+            #modal-body h3{
+                font-size: 24px;
+            }
+        }
+        .form-group{
+            width: 75%;
+            margin: 20px 0;
+            margin-left: 12.5%;
+        }
+        .form-group label{
+            display: block;
+            margin-bottom: 10px;
+            margin-left: -12%;
+            font-size: 18px;
+            color: #D2BC9C;
+        }
+        .form-group input{
+            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 20px;
+            font-family: arial, sans-serif;
+            outline: none;
+        }
+        .s-input[type='submit']{
+            font-size: 20px;
+            margin-bottom: 30px;
+            width: 75%;
+            margin-left: 12.5%;
+            transition: background 0.3s;
+            height: 64px;
+            background: linear-gradient(271.41deg, #D2BC9C 3.13%, #7C7066 96.67%);
+            border: #987C55;
+            color:#232B33;
+            font-weight: bold;
+            font-size: 22px;
+            border-radius: 64px;
+            cursor: pointer;
+        }
+        .s-input[type='submit']:hover{
+            background: rgba(180, 166, 142, 0.2);
+            border: 2px solid #bba585;
+            color: #D2BC9C;
+            font-weight: normal;
+        }
+        @keyframes modalSlideUp{
+            0%{
+                transform: translateY(1500px);
+            }
+            100%{
+                transform: translateY(0);
+            }
+        }
+
+</style>
+{% endblock navbar_style %}
+{% block body_class_name %}body{% endblock body_class_name %}
+{% block header_class_name %}header{% endblock header_class_name %}
+{% block header_content %}
+{% endblock header_content %}
+{% block main_content %}
+<div class="profile-wrapper">
+    <div class="profile-image">
+        
+        {% if profile.profile %}
+            <img src="{{profile.profile.url}}" alt="Silent Presto pic">
+        {% else %}
+            <img src="{% static '' %}img/user.png" alt="Silent Presto pic">
+        {% endif %}
+        <div class="temp-overlay one"></div>
+        <div class="temp-overlay two"></div>
+    </div>
+    <div class="profile-username">
+        <span id="profile-username-first">{{profile.first_name}} {{profile.last_name}}</span>
+    </div>
+    <div class="profile-intro">
+        <span class="username">@{{profile.user.username}} / {{profile.user_type}}</span>
+        <div class="profile-intro-Type">
+            <h2 class="hd"></h2><br>
+            {{profile.email}} 
+        </div>
+    </div>
+    <div class="profile-stats">
+        <button id="edit">Edit</button>
+    </div>
+</div>
+<div class="profile-accounts">
+    <a href="{% url 'deaf_undead:change_password' %}" class="profile-account-link">Change Password</a>
+    <a href="{% url 'deaf_undead:del_acc' %}" class="profile-account-link" id="red">Delete account</a>
+</div>
+
+<div id="contact-modal" class="modal">
+    <div id="modal-content">
+        <div id="modal-body">
+            <span class="close-modal">&times;</span>
+            <h3>Edit information</h3>
+            <form method="post" action="{% url 'deaf_undead:update' profile.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="Pic">Profile Picture</label>
+                    <input type="file" name="profile" value="{% if profile.profile %}{{profile.profile.url}}{% endif %}" style="font-size: 15px; cursor: pointer;">
+                </div>
+                <div class="form-group">
+                    <label for="name">First name</label>
+                    <input type="text" name="first_name" value="{{profile.first_name}}" >
+                </div>
+                <div class="form-group">
+                    <label for="username">Last name</label>
+                    <input type="text" name="last_name" value="{{profile.last_name}}" >
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" value="{{profile.email}}">
+                </div>
+                <input type="submit" value="Edit" class="s-input">
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    let modal = document.getElementById('contact-modal'),
+    openModal = document.getElementById('edit'),
+    closeModal = document.querySelector('.close-modal');
+
+    openModal.addEventListener('click', function(){
+    modal.style.display = 'block';
+    })
+    closeModal.addEventListener('click', function(){
+    modal.style.display = 'none'
+    })
+
+    window.addEventListener('click', function(e){
+        if(e.target == modal){
+        modal.style.display = 'none';
+        }
+    })
+</script>
+
+{% endblock main_content %}

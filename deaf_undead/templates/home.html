@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block navbar_style %}
+    <style>
+        a{
+            text-decoration: none;
+            color:#c9baa4;
+        }
+        .navbar{
+            position: fixed;
+            background: #D2BC9C;
+        }
+        .navbar.bg{
+            background: linear-gradient(98.22deg, #7C7066 0%, #D2BC9C 100%);
+        }
+        .name{
+            color: #303A43;
+        }
+        .name span{
+            color: #172129;
+        }
+        .link{
+            color: #303A43;
+        }
+        .link-item a::before {
+            background: radial-gradient(100% 776.95% at 0% 0%, #5c6872 0%, #172129 100%);
+        }
+        .bar{
+            background-color: #303A43;
+        }
+        .gold{
+            background: linear-gradient(98.22deg, #303A43 0%, #10161B 100%);
+        }
+        .gold li a{
+            color: #998b7f;
+        }
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: #D2BC9C;
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: #D2BC9C;
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_class_name %}body{% endblock body_class_name %}
+{% block header_id_name %}h-header{% endblock header_id_name %}
+{% block header_content %}
+    <div class="u-container" style="">
+        <div class="user-container">
+            {% if new_current_user.profile %}
+            <img src="{{new_current_user.profile.url}}" style="width:100px;height:100px;border-radius:50%;"/>
+            {% else %}
+            <i class="fa-solid fa-user" style="font-size: 90px;"></i>
+            {% endif %}
+            <div class="user">{{new_current_user.first_name}} {{new_current_user.last_name}} <br>
+                <a href="{% url 'deaf_undead:update' new_current_user.id %}"><button type="submit" class="hedit"><i class="fa-solid fa-pen-to-square"></i></button></a>
+            </div>
+        </div>
+        <div class="h-b">
+            <button type="submit" class="h-f">My friends</button><br>
+            <button type="submit" class="h-c">My courses</button>
+        </div>
+    </div>
+    <div class="h-container" style="padding-bottom:30px !important">
+        <div class="h-search">
+            <a href="{% url 'deaf_undead:search' %}"><div></div></a>
+            <i class="fa-solid fa-magnifying-glass" id="h-search"></i>
+        </div>
+        
+        <div class="course">
+            <p>Courses</p>
+            <ul type="none">
+                
+                {% if all_favs %}
+                    {% for c in  all_favs %}
+                        <li style="position: relative;">
+                            <span style="width:80%"><a href="{% url 'deaf_undead:course' c %}">{{c}}</a></span>
+                            <div id="m-r" style="width:30%;float: right;padding-right: 10px;">
+                                <a style="color:#c0ae93 !important;" href="{% url 'deaf_undead:add_to_favorites' c %}?action=del"> <i class="fa fa-star" aria-hidden="true"></i> </a>
+                            </div>
+                        </li>  
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+
+        <div class="friends" id="f">
+            <p>Friends</p>
+            
+            {% if all_friends %}
+            <ul type="none">
+                {% for result in all_friends %}
+                    <li style="position: relative;">
+                        <i class="fa-solid fa-user"></i>
+                        <span style="width:60%">{{result.to_user.first_name}} {{result.to_user.last_name}}</span>
+                        <div id="m-r" style="width:30%;float: right;padding-right: 10px;">
+                            <a href="" style="margin:0 5px;"><i class="fa-solid fa-message" id="message"></i></a>
+                            <a href="{% url 'deaf_undead:manage_friendship_list' result.id %}?action=dec" style="margin:0 5px;"> <i class="fa-solid fa-user-xmark" id="remove"></i> </a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p style="text-align:center;margin-top:50px;font-size:18px;color:#c9baa4;opacity:0.7;">No friends yet</p>
+            {% endif %}
+                
+         
+        </div>
+
+        <div class="friends" id="f2" style="margin-top: 30px;">
+            <p>Friend Request</p>
+            {% if income_friends %}
+                <ul type="none">
+                    {% for friend in income_friends %}
+                        <li>
+                            <i class="fa-solid fa-user"></i>
+                            {{friend.from_user.user.first_name}}  {{friend.from_user.user.last_name}}
+                            <div id="m-r" style="width:30%;float: right;padding-right: 10px;">
+                                <a href="{% url 'deaf_undead:manage_friendship_list' friend.id%}?action=acc" style="margin:0 5px;"> <i class="fa-solid fa-check" id="message"></i> </a>
+                                <a href="{% url 'deaf_undead:manage_friendship_list' friend.id%}?action=dec" style="margin:0 5px;"> <i class="fa-solid fa-xmark" id="remove"></i> </a>
+                            </div>
+                        </li>
+                    {% endfor %}   
+                </ul>
+            {% else %}
+            <p style="text-align:center;margin-top:50px;font-size:18px;color:#c9baa4;opacity:0.7;">No friend requests</p>
+            {% endif %}
+        </div>
+
+    </div>
+    <script>
+        const select = document.querySelector('.h-c');
+        const select2 = document.querySelector('.h-f');
+        const friend = document.querySelector('#f');
+        const friend2 = document.querySelector('#f2');
+        const course = document.querySelector('.course');
+        select2.classList.add('select');
+        course.style.display = "none";
+        select.addEventListener('click', () => {
+            select.classList.add('select');
+            select2.classList.remove('select');
+            friend.style.display = "none";
+            friend2.style.display = "none";
+            course.style.display = "block";
+        })
+        select2.addEventListener('click', () => {
+            select2.classList.add('select');
+            select.classList.remove('select');
+            friend.style.display = "block";
+            friend2.style.display = "block";
+            course.style.display = "none";
+        })
+    </script>
+{% endblock header_content %}
+{% block footer_class_name %}h-footer{% endblock footer_class_name %}
+{% block footer_content %}
+    <a href="{% url 'deaf_undead:conversation'%}"><button class="conv-btn2">START CONVERSATION</button></a>
+{% endblock footer_content %}

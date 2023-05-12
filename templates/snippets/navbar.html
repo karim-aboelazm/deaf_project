@@ -1,0 +1,40 @@
+{% load static %}
+{% with request.resolver_match.url_name as url_name %}
+
+<nav class="navbar"> 
+    <h1 class="name"><span>SILENT</span> PRESTO</h1>
+    <ul class="links-container">
+        {% if request.user.newuser or user.is_authenticated %}
+        <li class="link-item"><a href="{% url 'deaf_undead:home' %}" class="link {% if url_name == 'home' %}active{% endif %}">Home</a></li>
+        {% else %}
+        <li class="link-item"><a href="/" class="link {% if url_name == 'home' %}active{% endif %}">Home</a></li>
+        {% endif %}
+        <li class="link-item"><a href="{% url 'deaf_undead:about' %}" class="link {% if url_name == 'about' %}active{% endif %}">About</a></li>
+        <li class="link-item"><a href="{% url 'deaf_undead:ins' %}" class="link {% if url_name == 'ins' %}active{% endif %}">Inspirational</a></li>
+        {% if request.user.newuser or user.is_authenticated %}
+        <li class="link-item"><a href="{% url 'deaf_undead:courses' %}" class="link {% if url_name == 'courses' %}active{% endif %}">Courses</a></li>
+        {% else %}
+        <li class="link-item"><a href="" class="link {% if url_name == 'courses' %}active{% endif %}">Courses</a></li>
+        {% endif %}
+        
+        {% comment %} <li class="link-item" id="link-item">
+            <a href="#" class="link" id="link" id="dd" onclick = "openDropdown()"><i class="fa-solid fa-bell"></i></a>
+            <ul class="dropdown" id="alarm" style="margin-right: 45px;">
+                <li><a href="#">No Notifications Yet</a></li>
+            </ul>
+        </li>
+        <li class="link-item" id="link-item">
+            <a href="#" class="link" id="link" id="dd2" onclick = "openDropdown2()"><i class="fa-solid fa-user"></i></a>
+            <ul class="dropdown" id="profile">
+                <li><a href="setting.html">Profile</a></li>
+                <li><a href="index.html">Log out</a></li>
+            </ul>
+        </li> {% endcomment %}
+    </ul>
+    <div class="resp">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+</nav>
+{% endwith %}

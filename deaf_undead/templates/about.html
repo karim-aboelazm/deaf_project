@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block navbar_style %}
+    <style>
+        .navbar{
+            position: fixed;
+        }
+        .navbar.bg{
+            background: linear-gradient(98.22deg, #7C7066 0%, #D2BC9C 100%);
+        }
+        .name{
+            color: #303A43;
+        }
+        .name span{
+            color: #172129;
+        }
+        .link{
+            color: #303A43;
+        }
+        .link-item a::before {
+            background: radial-gradient(100% 776.95% at 0% 0%, #5c6872 0%, #172129 100%);
+        }
+        .bar{
+            background-color: #303A43;
+        }
+        .gold{
+            background: linear-gradient(98.22deg, #303A43 0%, #10161B 100%);
+        }
+        .gold li a{
+            color: #998b7f;
+        }
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #7C7066 0%, #D2BC9C 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_class_name %}body{% endblock body_class_name %}
+{% block header_class_name %}a-header{% endblock header_class_name %}
+{% block header_content %}
+    <div class="a-container">
+        <img src="{% static '' %}img/logo2.png" alt="Logo">
+        <p class="a-title">ABOUT US</p>
+        <div class="about">
+            The site enables deaf and dumb to communicate with others in a simple way by 
+            receiving audio and converting it to text and then into signs, or receiving text
+            directly and converting it to signs and vice versa. It's also provides sign language learning courses and other sign language
+            courses in a variety of subjects to help deaf and dumb learn.
+        </div>
+    </div>
+{% endblock header_content %}
+{% block main_content %}
+    <section class="a-middle">
+        <p>Watch How it works</p>
+        <video controls>
+            <source src="{% static '' %}img/how_it_works.mp4" type="video/mp4">
+            <source src="{% static '' %}img/how_it_works.mp4" type="video/ogg">
+            Your browser does not support the video tag.
+        </video>
+    </section>
+{% endblock main_content %}
+{% block footer_class_name %}a-footer{% endblock footer_class_name %}
+{% block footer_content %}
+    <p>contact us</p>
+    <div class="a-form">
+        <form action="" method="post" name="contact" id="a-form">
+            <div>
+                <input type="text" name="name" required class="a-input">
+                <label for="" class="a-label">Username</label>
+                <span>Username</span>
+            </div>
+            <div>
+                <input type="email" name="email" required class="a-input">
+                <label for="" class="a-label">Email</label>
+                <span>Email</span>
+            </div>
+            <div>
+                <input type="tel" name="phone" class="a-input">
+                <label for="" class="a-label">Phone</label>
+                <span>Phone</span>
+            </div>
+            <div class="m">
+                <textarea name="message" required class="a-input"></textarea>
+                <label for="" class="a-label">Message</label>
+                <span>Message</span>
+            </div>
+            <input type="submit" value="send" class="a-btn">
+        </form>
+    </div>
+{% endblock footer_content %}

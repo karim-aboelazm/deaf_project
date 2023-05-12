@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Undeaf{% endblock title %}
+{% block external_css_files %}
+    <script>
+        function play()
+        {
+            var videoSource = new Array();
+            var	videos = document.getElementById("list").getElementsByTagName("li");
+            for(var j=0;j<videos.length;j++)
+            {
+                videoSource[j] = "/static/" + videos[j].innerHTML +".mp4";
+            }
+
+            var i = 0; // define i 0 1 2 3 4 5 
+            var videoCount = videoSource.length;
+
+            function videoPlay(videoNum)
+            {
+                document.getElementById("list").getElementsByTagName("li")[videoNum].style.color = "#09edc7";
+                document.getElementById("list").getElementsByTagName("li")[videoNum].style.fontSize = "xx-large";
+                document.getElementById("videoPlayer").setAttribute("src", videoSource[videoNum]);
+                document.getElementById("videoPlayer").load();
+                document.getElementById("videoPlayer").play();
+
+            }
+            document.getElementById('videoPlayer').addEventListener('ended', myHandler, false);
+            document.getElementById("list").getElementsByTagName("li")[0].style.color = "#09edc7";
+            document.getElementById("list").getElementsByTagName("li")[0].style.fontSize = "xx-large";
+
+            videoPlay(0); // play the video 
+
+            function myHandler()
+            {
+                document.getElementById("list").getElementsByTagName("li")[i].style.color = "#feda6a";
+                document.getElementById("list").getElementsByTagName("li")[i].style.fontSize = "20px";
+                i++;
+                if (i == videoCount)
+                {
+                    document.getElementById("videoPlayer").pause();
+                }
+                else
+                {
+                    videoPlay(i);
+                }
+            }
+        }
+        function playPause(){
+            if (document.getElementById("videoPlayer").paused){
+                play();}
+            else{
+                document.getElementById("videoPlayer").pause();}
+        }
+    </script>
+{% endblock external_css_files %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_id_name %}h-undeaf{% endblock body_id_name %}
+{% block header_content %}
+    <div class="conv">
+        <div class="conv-icon">
+            <div class="icon"><i class="fa-solid fa-microphone" style="position:relative;"></i></div>
+            <div class="rec">Record your words</div>
+        </div>
+        <div class="conv-box">
+            <div class="box" style="padding-left:10px;background:rgba(64,64,64,1);box-shadow:none;">
+		        <video id="videoPlayer" width="98%" height="100%" style="position:relative;top:33px;border-radius:25%"  preload="auto" autoplay><source src="" type="video/mp4"></video>
+            </div>
+            <form id="my_form" class="col-md-12 mb-5 px-5" method="post">
+                {% csrf_token %}
+                <input type="text" name="sen" class="type" id="speechToText"  style="width:80% !important;">	
+			</form> 
+            <ul class="td" id="list" style="display:none;">
+                {% for word in words %}
+                <li id="{{ i }}" style="margin-right: 8px;">{{ word }}</li>
+                {% endfor %}
+            </ul>
+            
+            <div class="">
+				 <button class="send" type="submit" onclick="play();"><i class="fa-solid fa-paper-plane" style="font-size: 20px;"></i></button>
+                 <button class="send" style="margin-right:50px;margin-left:50px;font-size: 20px;" onclick="startConverting();" ><i class="fa-solid fa-microphone" style=""></i></button>
+            </div>
+            
+        </div> 
+    </div>  
+{% endblock header_content %}
+{% block main_content %}
+    <section class="icons">
+        <a href="{% url 'deaf_undead:deaf' %}"><div class="hand-btn"><i class="fa-regular fa-hand"></i></div></a>
+        {% if request.user.newuser or user.is_authenticated %}
+            <a href="{% url 'deaf_undead:home' %}"><div class="exit-btn"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i></div></a>   
+        {% else %}
+            <a href="/"><div class="exit-btn"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i></div></a>   
+        {% endif %}     
+    </section>
+{% endblock main_content %}

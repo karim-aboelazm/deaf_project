@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Search{% endblock title %}
+{% block navbar_style %}
+    <style>
+        a{
+            text-decoration: none;
+            color:#c9baa4;
+        }
+        .navbar{
+            margin-top:-30px;
+        }
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_class_name %}body{% endblock body_class_name %}
+{% block header_class_name %}c-header{% endblock header_class_name %}
+{% block header_id_name %}c-header{% endblock header_id_name %}
+{% block header_content %}
+    <div class="c-container">
+        <form method="get" action="{% url 'deaf_undead:search' %}">
+            <a href="{% url 'deaf_undead:home'%}"><i class="fa-solid fa-chevron-left" style="color: #9e8e82; font-size: 30px; margin: 6px 12px;"></i></a>
+            <input type="text" name="keyword" placeholder="search" class="c-search">
+        </form>
+    </div>
+    <script type="text/javascript">
+        // Using jQuery.
+        
+        $(function() {
+            $('form').each(function() {
+                $(this).find('input').keypress(function(e) {
+                    // Enter pressed?
+                    if(e.which == 10 || e.which == 13) {
+                        this.form.submit();
+                    }
+                });
+        
+                $(this).find('input[type=submit]').hide();
+            });
+        });
+        </script>
+{% endblock header_content %}
+{% block main_content %}
+    <div class="result" style="overflow:scroll;">  
+        {% if search_results %}
+            {% if req == "done" %}
+                {% for result in all_friends %}
+                    <div class="results" style="position:relative !important; margin-bottom:20px;">
+                        <p>
+                            {{result.to_user.first_name}} {{result.to_user.last_name}} <br>
+                            <span>@{{result.to_user.user.username}}</span>
+                            <i class="fa-solid fa-user-group"></i>
+                        </p>
+                    </div>
+                
+                {% endfor %}
+            
+            {% elif req == "in" %}
+                {% for result in income_friends %}
+                
+                    <div class="results" style="position:relative !important; margin-bottom:20px;">
+                        <p>
+                            {{result.from_user.user.first_name}} {{result.from_user.user.last_name}} <br>
+                            <span>@{{result.from_user.user.user.username}}</span>
+                            <a href="{% url 'deaf_undead:manage_friendship_list' result.id%}?action=acc"><i class="fa-solid fa-user-check"></i></a>
+                        </p>
+                    </div>
+                
+                {% endfor %}
+                
+            {% elif req == "out" %}
+                {% for result in outcome_friends %}  
+                    <div class="results" style="position:relative !important; margin-bottom:20px;">
+                        <p>
+                            {{result.to_user.user.first_name}} {{result.to_user.user.last_name}} <br>
+                            <span>@{{result.to_user.user.username}}</span>
+                            <a href="{% url 'deaf_undead:manage_friendship_list' result.id %}?action=dec"> <i class="fa-solid fa-user-minus"></i></a>
+                        </p>
+                    </div>
+                
+                {% endfor %}
+                
+            {% else %}
+                {% for result in search_results %}
+                
+                    <div class="results" style="position:relative !important; margin-bottom:20px;">
+                        <p>
+                            {{result.first_name}} {{result.last_name}} <br>
+                            <span>@{{result.user.username}}</span>
+                            <form action="{% url 'deaf_undead:create_friend' result.id %}" method="post" style="margin-top:-70px;float:right;" class="form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn" style="background:none;box-shadow:none;border:none;"><i class="fa-solid fa-user-plus" style="color:#c9baa4;"></i></button>
+                            </form>
+                        </p>
+                    </div>
+                
+                {% endfor %}
+            {% endif %}    
+        {% else %}
+            <p style="margin-top:150px;font-size:18px;color:#c9baa4;">No results found.</p>
+        {% endif %}
+            
+    </div>   
+{% endblock main_content %}

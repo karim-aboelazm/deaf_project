@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Course{% endblock title %}
+{% block external_css_files %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    :root {
+        --primary: #333434;
+        --active: #f1f1f1;
+        --secondary: #767777;
+        --grey: #8a8b8b;
+        --b-pad: 10px;
+        --s-pad: 5px;
+        --bg: rgb(50, 50, 50);
+      }
+    a.channel {
+        color: inherit;
+        text-decoration: none;
+      }
+      a.channel:hover {
+        text-decoration: underline;
+      }
+      
+      .title {
+        color: var(--secondary);
+        font-size: 15px;
+        font-weight: bold;
+      }
+      .sub-title {
+        color: var(--grey);
+        font-size: 13px;
+      }
+      .icon-active {
+        filter: sepia(100%) hue-rotate(150deg) saturate(400%);
+      }
+      
+      #playlist {
+        top: 50%;
+        left: 50%;
+        width: 80vw;
+        height:450px auto;
+        display: flex;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        transition: all ease 0.3s;
+      }
+      
+      #video-dis {
+        flex: 6.5;
+        margin-right: 20px;
+        background: black;
+      }
+      #video-dis iframe {
+        width: 100%;
+        height:450px;
+      }
+      .video-li {
+        flex: 3.5;
+        display: flex;
+        padding: var(--b-pad);
+        border-radius: 3px;
+        flex-direction: column;
+        background: var(--primary);
+        height:450px;
+        overflow:scroll;
+        border-radius:25px;
+      }
+      .li-collapsed {
+        overflow: hidden;
+        height: 40px;
+      }
+      #vli-info {
+        flex: 3;
+        padding: 0 var(--b-pad) 0 var(--b-pad);
+      }
+      
+      #upper-info {
+        display: flex;
+      }
+      
+      #li-titles {
+        flex: 9;
+      }
+      #li-titles div {
+        padding-bottom: 5px;
+      }
+      
+      #drop-icon {
+        flex: 1;
+        cursor: pointer;
+        background: url(https://user-images.githubusercontent.com/50569315/118832584-92350500-b8e2-11eb-8398-9a90a4615b98.png)
+          no-repeat center;
+        background-size: 50%;
+      }
+      
+      #lower-info {
+        display: flex;
+        padding-top: var(--b-pad);
+      }
+      #lower-info div {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+      #btn-repeat {
+        margin-right: var(--b-pad);
+        background: url(https://user-images.githubusercontent.com/50569315/118832591-93663200-b8e2-11eb-8b98-3b177304b555.png)
+          no-repeat left;
+        background-size: 50%;
+      }
+      #btn-suffle {
+        margin-right: var(--b-pad);
+        background: url(https://user-images.githubusercontent.com/50569315/118832597-93fec880-b8e2-11eb-9146-f978064eddb1.png)
+          no-repeat left;
+        background-size: 45%;
+      }
+      #btn-save {
+        margin-left: auto;
+        order: 2;
+        right: 10px;
+        margin-right: var(--b-pad);
+        background: url(https://user-images.githubusercontent.com/50569315/118832594-93fec880-b8e2-11eb-8201-12cb52be231f.png)
+          no-repeat right;
+        background-size: 60%;
+      }
+      
+      #vli-videos {
+        flex: 7;
+        overflow: scroll;
+      }
+      
+      .video-con {
+        display: flex;
+        cursor: pointer;
+        padding: var(--s-pad);
+        column-gap: var(--s-pad);
+        margin-bottom: var(--b-pad);
+      }
+      .video-con:hover,
+      .active-con {
+        background: var(--active);
+        border-radius:25px;
+      }
+      .index {
+        min-width: 15px;
+        align-self: center;
+      }
+      .thumb {
+        width: 90px;
+        height: 50px;
+        background: var(--secondary);
+      }
+      .thumb img {
+        width: 100%;
+      }
+      .v-titles {
+        flex: 6;
+      }
+      .v-titles div:nth-child(2) {
+        margin-top: var(--s-pad);
+      }
+      
+      @media only screen and (max-width: 1150px) {
+        #playlist {
+          width: 95vw;
+          height: 80vh;
+        }
+      }
+      @media only screen and (max-width: 950px) {
+        #playlist {
+          top: 10%;
+          width: 50vw;
+          margin: 0 auto;
+          display: block;
+          align-items: center;
+          transform: translate(-50%, 0%);
+        }
+        #video-dis {
+          margin-bottom: var(--b-pad);
+          width: 100%;
+          height: 300px auto;
+        }
+      }
+      @media only screen and (max-width: 800px) {
+        #playlist {
+          width: 60vw;
+        }
+      }
+      @media only screen and (max-width: 650px) {
+        #playlist {
+          width: 80vw;
+        }
+      }
+      
+</style>
+{% endblock external_css_files %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+
+{% block header_class_name %}c-header{% endblock header_class_name %}
+
+{% block header_content %}
+    <div class="c-container" style="margin-top:-30%">
+        <p style="font-size:35px">{{category.name}} course</p>
+        {% comment %} <img src="{% static '' %}img/searchc.png" alt="Search" width="20">
+        <input type="text" placeholder="search" class="c-search"> {% endcomment %}
+    </div>
+    
+{% endblock header_content %}
+
+{% block main_content %}
+    <section class="courses"  id="c"  >
+        <div id="playlist" style="margin-top:-80px;">
+
+            <div id="video-dis" style="border-radius:25px">
+              <iframe id="display-frame" style="border-radius:25px" src="" title="YouTube video player" frameborder="0" allow="" allowfullscreen></iframe>
+            </div>
+          
+            <div id="v-list" class="video-li">
+          
+              <div id="vli-info">
+                <div id="upper-info">
+                  <div id="li-titles">
+                    <div class="title">{{category.name}} Full Course</div>
+                    <div class="sub-title">
+                      <a href="" class="channel">{{category.name}}</a>
+                      -
+                      <span id="video-count">1 / 2</span>
+                    </div>
+                  </div>
+                 
+                </div>
+               
+              </div>
+              
+             
+                
+              
+                
+              <div id="vli-videos" style="margin-top:-70px;">
+                {% for c in category.allcourses_set.all  %}
+                <div class="video-con   {% if forloop.counter.first %}active-con{% endif %}" video="{{c.course_link}}" style="margin-bottom:15px;">
+                  <div class="index title" style="padding-right:10px;">0</div>
+                  <div class="thumb">
+                    <img src="{{c.course_poster}}" alt="">
+                  </div>
+                  <div class="v-titles" style="padding-left:10px;">
+                    <div class="title" style="font-size:13px">{{c.course_name}}</div>
+                  </div>
+                </div>
+                
+                {% endfor %}
+              </div>
+
+          
+            </div>
+          </div>
+    </section>
+    <script>
+        function qs(elem) {
+            return document.querySelector(elem);
+          }
+          function qsa(elem) {
+            return document.querySelectorAll(elem);
+          }
+          
+          // globals
+          var activeCon = 0,
+            totalCons = 0;
+          
+          // elements
+          const v_cons = qsa(".video-con"),
+            a_cons = qsa(".active-con"),
+            v_count = qs("#video-count"),
+            info_btns = qsa("#lower-info div"),
+            drop_icon = qs("#drop-icon"),
+            video_list = qs("#v-list"),
+            display = qs("#display-frame");
+          
+          // activate container
+          function activate(con) {
+            deactivateAll();
+            indexAll();
+            countVideos(con.querySelector(".index").innerHTML);
+            con.classList.add("active-con");
+            con.querySelector(".index").innerHTML = "►";
+          }
+          // deactivate all container
+          function deactivateAll() {
+            v_cons.forEach((container) => {
+              container.classList.remove("active-con");
+            });
+          }
+          // index containers
+          function indexAll() {
+            var i = 1;
+            v_cons.forEach((container) => {
+              container.querySelector(".index").innerHTML = i;
+              i++;
+            });
+          }
+          // update video count
+          function countVideos(active) {
+            v_count.innerHTML = active + " / " + v_cons.length;
+          }
+          // icon activate
+          function toggle_icon(btn) {
+            if (btn.classList.contains("icon-active")) {
+              btn.classList.remove("icon-active");
+            } else btn.classList.add("icon-active");
+          }
+          // toggle video list
+          function toggle_list() {
+            if (video_list.classList.contains("li-collapsed")) {
+              drop_icon.style.transform = "rotate(0deg)";
+              video_list.classList.remove("li-collapsed");
+            } else {
+              drop_icon.style.transform = "rotate(180deg)";
+              video_list.classList.add("li-collapsed");
+            }
+          }
+          function loadVideo(url) {
+            display.setAttribute("src", url);
+          }
+          
+          //******************
+          // Main Function heres
+          //******************
+          window.addEventListener("load", function () {
+            // starting calls
+            indexAll(); // container indexes
+            countVideos(1);
+            activate(v_cons[0]);
+            loadVideo(v_cons[0].getAttribute("video"));
+          
+            // Event handeling goes here
+            // on each video container click
+            v_cons.forEach((container) => {
+              container.addEventListener("click", () => {
+                activate(container);
+                loadVideo(container.getAttribute("video"));
+              });
+            });
+            // on each button click
+            info_btns.forEach((button) => {
+              button.addEventListener("click", () => {
+                toggle_icon(button);
+              });
+            });
+            // drop icon click
+            drop_icon.addEventListener("click", () => {
+              toggle_list();
+            });
+          });
+          
+    </script>
+{% endblock main_content %}
+

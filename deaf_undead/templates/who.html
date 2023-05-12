@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Who{% endblock title %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_id_name %}h-who{% endblock body_id_name %}
+
+{% block header_content %}
+<div class="quote2">
+    <h1>“We don’t need to talk or hear in order to touch the world around us”</h1>
+    <a href="{% url 'deaf_undead:deaf' %}"><button class="d-btn">Deaf</button></a><br>
+    <a href="{% url 'deaf_undead:undeaf' %}"><button class="ud-btn">Undeaf</button></a>
+</div>
+{% endblock header_content %}
+

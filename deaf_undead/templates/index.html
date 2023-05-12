@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_id_name %}h-index{% endblock body_id_name %}
+{% block header_class_name %}iheader{% endblock header_class_name %}
+{% block header_content %}
+    <img src="{% static '' %}img/logo.png" alt="logo" class="logo">
+    <h1>“Kindness is the language which the deaf can hear” <br> _Mark Twain</h1>
+    <div class="btn"> 
+        <a href="{% url 'deaf_undead:conversation'%}"><button class="conv-btn">START CONVERSATION</button></a>
+        <div class="btns">
+            <a href="{% url 'deaf_undead:signup'%}"><button class="s-btn">Sign up</button></a>
+            <a href="{% url 'deaf_undead:login'%}"><button class="l-btn">Login</button></a>
+        </div>
+    </div> 
+{% endblock header_content %}

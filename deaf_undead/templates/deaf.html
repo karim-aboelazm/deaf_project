@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Deaf{% endblock title %}
+{% block navbar_style %}
+    <style>
+        @media(max-width:994px){
+            .resp{
+                display: block;
+            }
+            .resp.active .bar:nth-child(2){
+                opacity: 0;
+            }
+            .resp.active .bar:nth-child(1){
+                transform: translateY(8px) rotate(45deg);
+            }
+            .resp.active .bar:nth-child(3){
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .links-container{
+                position: fixed;
+                left: 200%;
+                top: 70px;
+                gap: 0;
+                flex-direction: column;
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+            }
+            .link-item{
+                margin: 16px 0;
+            }
+
+            .links-container.active{
+                left: 0;
+            }
+            .links-container{
+                background: linear-gradient(98.22deg, #10161B 0%, #303A43 100%);
+            }
+        }
+    </style>
+{% endblock navbar_style %}
+{% block body_id_name %}h-deaf{% endblock body_id_name %}
+{% block header_content %}
+    <div class="conv">
+        <div class="conv-icon">
+            <div class="icon" id="icon"><i class="fa-regular fa-hand"></i></div>
+            <div class="rec">Move your hands</div>
+        </div>
+        <div class="conv-box" id="conv-box" style="padding:1px;">
+
+        </div> 
+        <div id="cam-btn">
+            <button class="cam-btn" id="toggleButton"><i class="fa fa-video"></i></button>
+        </div> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+    // Get references to the button and the content div
+    const toggleButton = document.getElementById('toggleButton');
+    const contentDiv = document.getElementById('conv-box');
+    let isContentVisible = false;
+
+    // Add an event listener to the button
+    toggleButton.addEventListener('click', function() {
+        if (!isContentVisible) {
+        // Add the new element
+        const iframeSrc = "{{iframe_src}}"; // Replace with the actual source or URL
+        contentDiv.innerHTML = `<img src="${iframeSrc}" width="100%" height="100%" style="border-radius:45px;"/>`;
+        toggleButton.innerHTML = '<i class="fa fa-video-slash"></i>';
+        isContentVisible = true;
+        } else {
+        // Remove the element
+        contentDiv.innerHTML = '';
+        toggleButton.innerHTML = '<i class="fa fa-video"></i>';
+        isContentVisible = false;
+        }
+    });
+    </script>   
+    </div>
+{% endblock header_content %}
+{% block main_content %}
+    <section class="icons">       
+        <a href="{% url 'deaf_undead:undeaf' %}"><div class="mic-btn"><i class="fa-solid fa-microphone"></i></div></a>
+        {% if request.user.newuser or user.is_authenticated %}
+        <a href="{% url 'deaf_undead:home' %}"><div class="exit-btn"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i></div></a>
+        {% else %}
+        <a href="/"><div class="exit-btn"><i class="fa-solid fa-arrow-right-from-bracket fa-flip-horizontal"></i></div></a>
+        {% endif %}
+    </section>
+{% endblock main_content %}
