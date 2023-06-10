@@ -1,0 +1,11 @@
+nltk
+extrenal_words = ['C','A','T']
+
+extrenal_words = ''.join(extrenal_words) # CAT
+extrenal_words.capitalize() # Cat
+
+if prediction.accuracy >= 88:
+    extrenal_words.append(prediction)
+C 99%
+A 89%
+T 88.4 %

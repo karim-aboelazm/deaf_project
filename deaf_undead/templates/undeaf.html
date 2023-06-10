@@ -104,7 +104,7 @@
             <div class="box" style="padding-left:10px;background:rgba(64,64,64,1);box-shadow:none;">
 		        <video id="videoPlayer" width="98%" height="100%" style="position:relative;top:33px;border-radius:25%"  preload="auto" autoplay><source src="" type="video/mp4"></video>
             </div>
-            <form id="my_form" class="col-md-12 mb-5 px-5" method="post">
+            <form id="my_form"  class="col-md-12 mb-5 px-5" method="post">
                 {% csrf_token %}
                 <input type="text" name="sen" class="type" id="speechToText"  style="width:80% !important;">	
 			</form> 
@@ -115,7 +115,7 @@
             </ul>
             
             <div class="">
-				 <button class="send" type="submit" onclick="play();"><i class="fa-solid fa-paper-plane" style="font-size: 20px;"></i></button>
+				 <button class="send" type="submit" id="submit_btn" onclick="play();"><i class="fa-solid fa-paper-plane" style="font-size: 20px;"></i></button>
                  <button class="send" style="margin-right:50px;margin-left:50px;font-size: 20px;" onclick="startConverting();" ><i class="fa-solid fa-microphone" style=""></i></button>
             </div>
             

@@ -6,6 +6,7 @@ from django.http                import StreamingHttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views  import PasswordChangeView
 from nltk.stem                  import WordNetLemmatizer
+from difflib                    import get_close_matches
 from keras.models               import model_from_json
 from nltk.tokenize              import word_tokenize
 from keras.layers               import LSTM , Dense
@@ -20,9 +21,7 @@ from .forms                     import *
 from .models                    import *
 from .utils                     import *
 from .function                  import *
-import cv2,nltk
-
-
+import cv2,nltk,enchant
 
 
 class SplashPageView(TemplateView):
@@ -205,7 +204,7 @@ class CoursesPageView(TemplateView):
         context["new_current_user"] = NewUser.objects.get(user=current_user)
         context["all_favs"]         = [c.course.name for c in FavouritCourses.objects.filter(user=context["new_current_user"])]
         return context
-
+'''
 class DetectionPageView(View):
     cap = None 
     is_streaming = False
@@ -292,14 +291,133 @@ class DetectionPageView(View):
             self.start_stream()
         elif 'stop' in request.POST:
             self.stop_stream()
-               
+'''
+def get_closest_valid_word(word):
+    dictionary = enchant.Dict("en_US")
+    closest_words = get_close_matches(word, dictionary.suggest, n=1, cutoff=0.8)
+    if closest_words:
+        return closest_words[0]
+    return None
+
+class DetectionPageView(View):
+    cap = None 
+    is_streaming = False
+
+    def start_stream(self):
+        self.is_streaming = True
+
+    def stop_stream(self):
+        self.is_streaming = False
+
+    def stream(self):
+        json_file = open("static/model.json", "r")
+        model_json = json_file.read()
+        json_file.close()
+
+        model = model_from_json(model_json)
+        model.load_weights("static/model.h5")
+
+        sequence, sentence, accuracy, predictions, colors, threshold = [], [], [], [], [], 0.8
+        high_accuracy_letters = []  # List to store letters with high accuracy
+
+        for i in range(0, 20):
+            colors.append((245, 117, 16))  # bgr   blue, gray , red
+
+        def prob_viz(res, actions, input_frame, colors, threshold):
+            output_frame = input_frame.copy()
+            for num, prob in enumerate(res):
+                cv2.rectangle(output_frame, (0, 60 + num * 40), (int(prob * 100), 90 + num * 40), (90, 112, 134), -1)
+                cv2.putText(output_frame, actions[num], (30, 500), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2,cv2.LINE_AA)
+            return output_frame
+
+        self.cap = cv2.VideoCapture(0)
+
+        with mp_hands.Hands(model_complexity=0, min_detection_confidence=0.5, min_tracking_confidence=0.5) as hands:
+            
+            while self.cap.isOpened():
+                _, frame = self.cap.read()
+                cropframe = frame[0:640, 0:480]
+                frame = cv2.rectangle(frame, (0, 80), (250, 440), (90, 112, 134), 2)
+                
+                image, results = mediapipe_detection(cropframe, hands)
+                keypoints = extract_keypoints(results)
+                
+                sequence.append(keypoints)
+                sequence = sequence[-15:]  
+                try:
+                    if len(sequence) == 15:
+                        res = model.predict(np.expand_dims(sequence, axis=0))[0]
+                        predictions.append(np.argmax(res))
+                        
+                        if np.unique(predictions[-10:])[0] == np.argmax(res):
+                            if res[np.argmax(res)] > threshold:
+                                if len(sentence) > 0:
+                                    if actions[np.argmax(res)] != sentence[-1]:
+                                        sentence.append(actions[np.argmax(res)])
+                                        accuracy.append(str(round(res[np.argmax(res)] * 100, 2)))
+                                        # Collect letters with high accuracy
+                                        if res[np.argmax(res)] >= 0.9:
+                                            high_accuracy_letters.append(actions[np.argmax(res)])
+                                else:
+                                    sentence.append(actions[np.argmax(res)])
+                                    accuracy.append(str(round(res[np.argmax(res)] * 100, 2)))
+                                    # Collect letters with high accuracy
+                                    if res[np.argmax(res)] >= 0.9:
+                                        high_accuracy_letters.append(actions[np.argmax(res)])
+                        
+                        if len(sentence) > 1:
+                            sentence = sentence[-1:]
+                            accuracy = accuracy[-1:]
+                except Exception as e:
+                    pass
+                
+                # text = f"Output: - {' '.join(sentence)} ({' '.join(accuracy)}) %"
+                if len(high_accuracy_letters) > 1:
+                    high_accuracy_letters = set(high_accuracy_letters[0:20])
+                    high_accuracy_letters = list(high_accuracy_letters)
+                    text = f"""    (" {''.join(high_accuracy_letters).capitalize()} ") """
+                    # text=f"{type(high_accuracy_letters)} - ({len(high_accuracy_letters)})"
+                else:
+                    text = ""
+                cv2.rectangle(frame, (0, 0), (640, 40), (90, 112, 134), -1)
+                cv2.putText(frame, text, (3, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
+                _, jpeg = cv2.imencode('.jpg', frame)
+                yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
+        
+    def __call__(self, *args, **kwargs):
+        return self.stream(), 'multipart/x-mixed-replace; boundary=frame'
+
+    def get(self,request):
+        high_accuracy_word = ''  # Initialize with an empty word
+        if self.is_streaming:
+            high_accuracy_word = ''.join(high_accuracy_letters)
+        response = StreamingHttpResponse(self.stream(), content_type='multipart/x-mixed-replace; boundary=frame')
+        response.high_accuracy_word = high_accuracy_word  # Set the high_accuracy_word as an attribute of the response object
+        return response
+
+    def post(self, request, *args, **kwargs):
+        if 'start' in request.POST:
+            self.start_stream()
+        elif 'stop' in request.POST:
+            self.stop_stream()
+              
 class DeafPageView(TemplateView):
-    template_name               = "deaf.html"
+    template_name = "deaf.html"
+
     def get_context_data(self, **kwargs):
-        context                 = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         iframe_src = self.request.build_absolute_uri(reverse('deaf_undead:detect'))
-        context["iframe_src"]   = iframe_src
+        context["iframe_src"] = iframe_src
         return context
+
+    def get(self, request, *args, **kwargs):
+        detection_view = DetectionPageView()
+        response = detection_view.get(request)
+        high_accuracy_word = response.high_accuracy_word  # Get the high accuracy word
+        context = self.get_context_data()
+        context['high_accuracy_word'] = high_accuracy_word  # Add high accuracy word to the context
+        return self.render_to_response(context)
+
     
 class AnimationView(View):
     def get(self, request):

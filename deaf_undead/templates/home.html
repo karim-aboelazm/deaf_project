@@ -35,7 +35,7 @@
         .gold li a{
             color: #998b7f;
         }
-        @media(max-width:994px){
+        @media (max-width:994px){
             .resp{
                 display: block;
             }
@@ -85,6 +85,7 @@
             {% endif %}
             <div class="user">{{new_current_user.first_name}} {{new_current_user.last_name}} <br>
                 <a href="{% url 'deaf_undead:update' new_current_user.id %}"><button type="submit" class="hedit"><i class="fa-solid fa-pen-to-square"></i></button></a>
+                <a href="{% url 'deaf_undead:logout' %}"><button type="submit" class="hedit"><i class="fa-solid fa-right-from-bracket"></i></button></a>
             </div>
         </div>
         <div class="h-b">

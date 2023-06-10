@@ -16,21 +16,94 @@
         {% else %}
         <li class="link-item"><a href="" class="link {% if url_name == 'courses' %}active{% endif %}">Courses</a></li>
         {% endif %}
-        
-        {% comment %} <li class="link-item" id="link-item">
-            <a href="#" class="link" id="link" id="dd" onclick = "openDropdown()"><i class="fa-solid fa-bell"></i></a>
-            <ul class="dropdown" id="alarm" style="margin-right: 45px;">
-                <li><a href="#">No Notifications Yet</a></li>
-            </ul>
+        <li class="" >
+            <button onclick="toggleDropdown()" class="dropbtn">Notifications</button>
+            <div class="dropdown" style="position:absolute !important;z-index:10000 !important;margin-left:-400px;margin-top:50px">
+                <div id="dropdownContent" class="dropdown-content" >
+                    <h4 style="text-align:center;border-bottom: 2px solid;margin-bottom: 10px;padding-bottom: 10px;">Notifications</h4>
+                    {% if all_friends %}
+                        <ul type="none">
+                            {% for result in all_friends %}
+                                <li style="position: relative;">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span style="width:60%">{{result.to_user.first_name}} {{result.to_user.last_name}}</span>
+                                    <div id="m-r" style="width:30%;float: right;padding-right: 10px;">
+                                        <a href="" style="margin:0 5px;"><i class="fa-solid fa-message" id="message"></i></a>
+                                        <a href="{% url 'deaf_undead:manage_friendship_list' result.id %}?action=dec" style="margin:0 5px;"> <i class="fa-solid fa-user-xmark" id="remove"></i> </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                    <p style="text-align:center;margin-top:50px;font-size:18px;color:#c9baa4;opacity:0.7;">No friends yet</p>
+                    {% endif %}
+                </div>
+            </div>
         </li>
-        <li class="link-item" id="link-item">
-            <a href="#" class="link" id="link" id="dd2" onclick = "openDropdown2()"><i class="fa-solid fa-user"></i></a>
-            <ul class="dropdown" id="profile">
-                <li><a href="setting.html">Profile</a></li>
-                <li><a href="index.html">Log out</a></li>
-            </ul>
-        </li> {% endcomment %}
     </ul>
+    
+    <style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+          
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position:absolute;
+            background-color: #f9f9f9;
+            width: 350px;
+            padding:20px;
+            border-radius:25px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 100000;
+        }
+        
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .show {
+            display: block;
+        }              
+    </style>
+    
+    <script>
+        function toggleDropdown() {
+          var dropdownContent = document.getElementById("dropdownContent");
+          dropdownContent.classList.toggle("show");
+        }
+      
+        window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.classList.contains("show")) {
+                openDropdown.classList.remove("show");
+              }
+            }
+          }
+        }
+      </script>
+      
+    
     <div class="resp">
         <span class="bar"></span>
         <span class="bar"></span>

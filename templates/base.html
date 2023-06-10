@@ -4,7 +4,8 @@
     <title>SILENT PRESTO - {% block title %}{% endblock title %}</title>
     {% include "snippets/head.html" %}
     {% block navbar_style %}{% endblock navbar_style %}
-    {% block external_css_files %}{% endblock external_css_files %}
+    {% block external_css_files %}
+    {% endblock external_css_files %}
 </head>
 <body id="{% block body_id_name %}{% endblock body_id_name %}" class="{% block body_class_name %}{% endblock body_class_name %}">
     {% include "snippets/navbar.html" %}
