@@ -737,7 +737,7 @@ textarea{
    position: relative;
    width: 100%;
    top: 68px;
-   z-index: -1;
+   z-index: 1;
 }
 
 
@@ -1110,6 +1110,14 @@ textarea{
         border-radius: 0px 0px 200px 0px;
     }
 }
+@media(max-width:420px){
+    .user-container{
+        left: -40px;
+    }
+    .h-b{
+        top: 100px;
+    }
+}
 @media(max-width:530px){
     .u-container{
         width: 100%;
@@ -1312,6 +1320,7 @@ textarea{
     text-align: center;
     cursor: pointer;
     padding: 7px;
+    border: none;
 }
 .cam-btn:hover{
     background: rgba(214, 185, 137, 0.2);
@@ -1888,10 +1897,6 @@ a.channel {
   
   #upper-info {
     display: flex;
-  }
-  
-  #li-titles {
-    
   }
   #li-titles div {
     padding-bottom: 5px;

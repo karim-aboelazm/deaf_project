@@ -181,8 +181,9 @@ class ManageFriendShipView(View):
             FriendShip.objects.create(from_user=friendship_obj.to_user,to_user=friendship_obj.from_user,status="accepted")
             friendship_obj.save()
         elif action                 == 'dec':
-            f = FriendShip.objects.get(from_user=friendship_obj.to_user,to_user=friendship_obj.from_user,status="accepted")
-            f.delete()
+
+            # FriendShip.objects.get(from_user=friendship_obj.to_user,to_user=friendship_obj.from_user).delete()
+            FriendShip.objects.get(from_user=friendship_obj.from_user,to_user=friendship_obj.to_user).delete()
             friendship_obj.delete()
 
         else:
@@ -356,13 +357,13 @@ class DetectionPageView(View):
                                         sentence.append(actions[np.argmax(res)])
                                         accuracy.append(str(round(res[np.argmax(res)] * 100, 2)))
                                         # Collect letters with high accuracy
-                                        if res[np.argmax(res)] >= 0.9:
+                                        if res[np.argmax(res)] >= 0.8:
                                             high_accuracy_letters.append(actions[np.argmax(res)])
                                 else:
                                     sentence.append(actions[np.argmax(res)])
                                     accuracy.append(str(round(res[np.argmax(res)] * 100, 2)))
                                     # Collect letters with high accuracy
-                                    if res[np.argmax(res)] >= 0.9:
+                                    if res[np.argmax(res)] >= 0.8:
                                         high_accuracy_letters.append(actions[np.argmax(res)])
                         
                         if len(sentence) > 1:
@@ -373,8 +374,7 @@ class DetectionPageView(View):
                 
                 # text = f"Output: - {' '.join(sentence)} ({' '.join(accuracy)}) %"
                 if len(high_accuracy_letters) > 1:
-                    high_accuracy_letters = set(high_accuracy_letters[0:20])
-                    high_accuracy_letters = list(high_accuracy_letters)
+                    high_accuracy_letters = high_accuracy_letters[0:20]
                     text = f"""    (" {''.join(high_accuracy_letters).capitalize()} ") """
                     # text=f"{type(high_accuracy_letters)} - ({len(high_accuracy_letters)})"
                 else:
