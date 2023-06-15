@@ -47,14 +47,33 @@
 <div class="l-container">
     <form method="post">
         {% csrf_token %}
-        <input type="text" name="username" placeholder="Username" class="lu-in" required><br>
-        <input type="password" name="password" placeholder="Password" class="lp-in" required><br>
-        <input type="submit" value="Log in" class="ll-btn"><br>
+        {% if messages %}
+        <div class="modal" style="margin-top: 20px;">
+            <h1 class="title" style="text-align: center;color: #D2BC9C;font-size: 30px;">
+            <img src="http://100dayscss.com/codepen/alert.png" width="70" height="70" /><br>Oops!</h1>
+            {% for message in messages %}
+            <p style="text-align:center;margin-bottom:20px;color: #D2BC9C;font-size: 20px;padding:20px">{{ message }}</p>
+            {% endfor %}
+            <button class="ll-btn" style="position:relative;" type="button" onclick="dismissMessage()">OK</button>
+        </div>
+        {% endif %}
+    
+        <div class="form-content" style="display: {% if messages %}none{% else %}block{% endif %};">
+            <input type="text" name="username" placeholder="Username" class="lu-in" required><br>
+            <input type="password" name="password" placeholder="Password" class="lp-in" required><br>
+            <input type="submit" value="Log in" class="ll-btn"><br>
+            <div class="signup">
+                Don't have an account? <a href="{% url 'deaf_undead:signup'%}">Sign up</a><br>
+                <a href="{% url 'deaf_undead:forget_password'%}">Forget pasword?</a> 
+            </div>
+        </div>
     </form>
-    <div class="signup">
-        Don't have an account? <a href="{% url 'deaf_undead:signup'%}">Sign up</a><br>
-        <a href="{% url 'deaf_undead:forget_password'%}">Forget pasword?</a> 
-    </div>   
+    <script>
+        function dismissMessage() {
+          document.querySelector('.modal').style.display = 'none';
+          document.querySelector('.form-content').style.display = 'block';
+        }
+      </script>
 </div>
 {% endblock header_content %}
 

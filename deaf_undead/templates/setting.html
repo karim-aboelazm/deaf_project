@@ -357,7 +357,28 @@
 </div>
 <div class="profile-accounts">
     <a href="{% url 'deaf_undead:change_password' %}" class="profile-account-link">Change Password</a>
-    <a href="{% url 'deaf_undead:del_acc' %}" class="profile-account-link" id="red">Delete account</a>
+    <script src="https://common.olemiss.edu/_js/sweet-alert/sweet-alert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://common.olemiss.edu/_js/sweet-alert/sweet-alert.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("red").addEventListener("click", function() {
+              swal({
+                title: "Are you sure?",
+                text: "You will not be able to reach this account another time!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+              },
+              function(){
+                swal("Deleted!", "Your account has been deleted.", "success");
+                window.location.href = "{% url 'deaf_undead:del_acc' %}";
+              });
+            });
+        });
+    </script>
+    <a class="profile-account-link" id="red">Delete account</a>
 </div>
 
 <div id="contact-modal" class="modal">

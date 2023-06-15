@@ -2,44 +2,26 @@
 {% with request.resolver_match.url_name as url_name %}
 
 <nav class="navbar"> 
-    <h1 class="name"><span>SILENT</span> PRESTO</h1>
+        {% if request.user.newuser and user.is_authenticated %}
+    <a href="{% url 'deaf_undead:home' %}" style="text-decoration: none;"> <h1 class="name"><span>SILENT</span> PRESTO</h1></a>
+        {% else %}
+        <a href="/" style="text-decoration: none;"> <h1 class="name"><span>SILENT</span> PRESTO</h1></a>
+        {% endif %}
     <ul class="links-container">
-        {% if request.user.newuser or user.is_authenticated %}
+        {% if request.user.newuser and user.is_authenticated %}
         <li class="link-item"><a href="{% url 'deaf_undead:home' %}" class="link {% if url_name == 'home' %}active{% endif %}">Home</a></li>
         {% else %}
         <li class="link-item"><a href="/" class="link {% if url_name == 'home' %}active{% endif %}">Home</a></li>
         {% endif %}
         <li class="link-item"><a href="{% url 'deaf_undead:about' %}" class="link {% if url_name == 'about' %}active{% endif %}">About</a></li>
         <li class="link-item"><a href="{% url 'deaf_undead:ins' %}" class="link {% if url_name == 'ins' %}active{% endif %}">Inspirational</a></li>
-        {% if request.user.newuser or user.is_authenticated %}
+        {% if request.user.newuser and user.is_authenticated %}
         <li class="link-item"><a href="{% url 'deaf_undead:courses' %}" class="link {% if url_name == 'courses' %}active{% endif %}">Courses</a></li>
+        <li class="link-item"><a href="{% url 'deaf_undead:update' request.user.newuser.id %}" class="link"><i class="fa-solid fa-user"></i></a></li>
         {% else %}
         <li class="link-item"><a href="" class="link {% if url_name == 'courses' %}active{% endif %}">Courses</a></li>
         {% endif %}
-        <li class="" >
-            <button onclick="toggleDropdown()" class="dropbtn">Notifications</button>
-            <div class="dropdown" style="position:absolute !important;z-index:10000 !important;margin-left:-400px;margin-top:50px">
-                <div id="dropdownContent" class="dropdown-content" >
-                    <h4 style="text-align:center;border-bottom: 2px solid;margin-bottom: 10px;padding-bottom: 10px;">Notifications</h4>
-                    {% if all_friends %}
-                        <ul type="none">
-                            {% for result in all_friends %}
-                                <li style="position: relative;">
-                                    <i class="fa-solid fa-user"></i>
-                                    <span style="width:60%">{{result.to_user.first_name}} {{result.to_user.last_name}}</span>
-                                    <div id="m-r" style="width:30%;float: right;padding-right: 10px;">
-                                        <a href="" style="margin:0 5px;"><i class="fa-solid fa-message" id="message"></i></a>
-                                        <a href="{% url 'deaf_undead:manage_friendship_list' result.id %}?action=dec" style="margin:0 5px;"> <i class="fa-solid fa-user-xmark" id="remove"></i> </a>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                    <p style="text-align:center;margin-top:50px;font-size:18px;color:#c9baa4;opacity:0.7;">No friends yet</p>
-                    {% endif %}
-                </div>
-            </div>
-        </li>
+        
     </ul>
     
     <style>
